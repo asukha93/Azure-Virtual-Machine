@@ -255,9 +255,8 @@ Here, we can see the DNS name has been added successfully.<img src="https://i.im
 
 - After exiting, open a new tab in your browser and enter **https://** followed by the DNS name previously used to access Nextcloud.
 
-The website should load and ask for an username and password. Fill that out using the credentials previously created in Bastion and log in.
-  <img src="https://i.imgur.com/PWv78YN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+- The website should load and ask for an username and password. Fill that out using the credentials previously created in Bastion and log in.<img src="https://i.imgur.com/PWv78YN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
-After logging in, the site will load succesfully.   <img src="https://i.imgur.com/D3ujpL9.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+- After logging in, the site will load succesfully.   <img src="https://i.imgur.com/D3ujpL9.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
-This completes the project. Following these steps, we have successfully completed each objective to fully create a Virtual Machine, deploy a Web Server, install Nextcloud using Bastion via SSH, published an IP, and created a DNS label.
+This completes the project. Following these steps, we have successfully completed each objective to fully create a Virtual Machine, deploy a Web Server, install Nextcloud using Bastion via SSH, publish an IP, and created a DNS label.
