@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this project, I will be demonstrating how to create a Virtual Machine (VM) and deploy a Web Server in Microsoft Azure. I will be creating a Virtual Machine, connecting it to a subnet, and protecting the virtual network through inbound and outbound rules via Network Security Groups in the Azure environment. I will demonstrate how to use Bastion to connect to the virtual machine via SSH while limiting external exposure and install a Nextcloud Server. This will then be made available by opening a public IP and a DNS label. This approach aligns with cloud computing principles, enabling organizations to build scalable, cost-effective, and secure web applications.
+In this project, I will be demonstrating how to create a Virtual Machine (VM) and deploy a Web Server in Microsoft Azure. I will be creating a Virtual Machine, connecting it to a subnet, and protecting the virtual network through inbound and outbound rules via Network Security Groups in the Azure environment. I will demonstrate how to use Bastion to connect to the virtual machine via SSH while limiting external exposure and install a Nextcloud Server. This will then be made available by opening a public IP and a DNS label.
 
 ## Objectives
 - Create a Resource Group
@@ -156,10 +156,108 @@ In this step, we will be creating the Virtual Machine that will be connected to 
 
 - Under **"Public IP"**, select **None**. Click **Review and Create** once done.<img src="https://i.imgur.com/LjFwpSj.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
+- Once validation has passed, click **Create**.<img src="https://i.imgur.com/jMUSDpW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
-Once validation has passed, click **Create**.<img src="https://i.imgur.com/jMUSDpW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+- A message will appear titled **Generate new key pair**. Click **"Download private key and create resource"** when prompted and save to your local device for **future use**.
+<img src="https://i.imgur.com/UhXlPKw.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 ## Install Nextcloud
 
 In this step, we are going to connect our Virtual Machine to our Bastion Instance via SSH and install Nextcloud on our virtual machine.
 
+- Once the Virtual Machine has completed deployment, click **Go to resource**<img src="https://i.imgur.com/CZvr3fZ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- From there, click **Connect**, and then click **Connect via Bastion** from the dropdown menu.<img src="https://i.imgur.com/n6xV3xt.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Go to **Authentication Type** and use the dropdown menu to select **SSH Private Key from Local File.
+<img src="https://i.imgur.com/li0jgx2.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Enter the username used when creating the Virtual Machine and select the blue folder button to upload the **SSH Private Key** previously saved to our local device. Click **Connect** once done.
+  <img src="https://i.imgur.com/wT6e8Qg.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+ - Once connected, a new window will open similiar to the photo shown below. Enter the command **sudo snap install nextcloud**. This will install Nextcloud and may take a few minutes to complete.
+
+<img src="https://i.imgur.com/oSReK28.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+Once finished, we will begin setting up our username and password.
+- Type **sudo nextcloud.manual-install** as shown in **RED** below. Followed by **YOUR UNIQUE** username and password shown in **BLUE** below. Hit the **enter** key to proceed with installation. This may take a few minutes.
+In my case, I have used **admin** as my username and **admin** as my password FOR TEST PURPOSES.
+<img src="https://i.imgur.com/w93ymAc.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- After installlation is complete, type **sudo nextcloud.enable-https self-signed** and hit enter<img src="https://i.imgur.com/mDA4HUW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Once finished, type **exit** and hit the enter key<img src="https://i.imgur.com/aYfqGfT.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- A message will appear saying **You have been discnnected**. Click close to exit the browser and return to the Azure environemnt.<img src="https://i.imgur.com/fVx870y.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+With this, our Virtual Machine has been connected using Bastion via SSH and we have succesfully installed the Nextcloud server!
+
+## Publish the IP
+
+In this step, we will create a public IP and only allow HTTPS connections.
+
+- After exiting the browser, click on **Network Settings** as shown below.<img src="https://i.imgur.com/2haHQ2C.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Go to **Network Interface** and click on the link as shown below.<img src="https://i.imgur.com/RDR5Wi0.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click on **IP Configurations**
+<img src="https://i.imgur.com/CKgRVqB.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click on the **ipconfig1** link
+  <img src="https://i.imgur.com/6xjI7kY.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click **Create a public IP address**, enter a name for the new public  IP address, select **Standard** for SKU, click **OK** and then **Save** to complete editting settings. This may take a few moments to complete. 
+  <img src="https://i.imgur.com/wpqcdmF.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+Our newly create Public IP Address is now active.  <img src="https://i.imgur.com/9rWPnQ1.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+Next, we will edit our inbound security rules to only allow inbound HTTPS traffic from our current IP address. This will be different for everyone. Go to whatsmyip.com and copy your IP address.
+
+Once you have your IP address, go back to Azureand click **Network Settings** as shown below to return to that area.
+<img src="https://i.imgur.com/ipxKHMR.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- From there, click **Create port rule** and select **Inbound port rule** from the dropdown.<img src="https://i.imgur.com/YuJIbTe.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Using the dropdown, Change **Source** to **IP Addresses**. Under **Source IP Addresses**, add your unique IP address that we copied through whatsmyip.com. Using the dropdown again, change the **Destination** to **Private IP Address** as shown below. Change **Service** to **HTTPS** and choose a name for the new rule. CLick **ADD** once done. This may take a few minutes.
+
+<img src="https://i.imgur.com/iX4ugPf.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+With this, we have succesfully associated a Public IP to our Nextcloud Server. 
+
+## Create a DNS Label
+
+In this step, we will be setting up a DNS entry for our Public IP in order to access our Nextcloud Server successfully.
+
+To do this, we need to return to our resource group. You can do that by clicking on the name of you resource roup as shown below. The name of your resource group will be different. <img src="https://i.imgur.com/85HEL8q.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+From the Resource Group, click the link to the **Public IP Address**<img src="https://i.imgur.com/sj8xJYQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click **Configuration**
+<img src="https://i.imgur.com/RIK1wZW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Enter a name under **DNS name label** and click **Save** when done.<img src="https://i.imgur.com/JMGD5pp.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Once saved, click **Overview**
+<img src="https://i.imgur.com/Oy7rsF6.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+Here, we can see the DNS name has been added successfully.<img src="https://i.imgur.com/3tvccGM.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click the name of your Resource Group to return to the resource group area.<img src="https://i.imgur.com/ahTcpcH.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click on the link of your Virtual Machine.<img src="https://i.imgur.com/3PgxBNi.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- Click on **Connect** and then click on **Connect Bastion** from the dropdown and log in to Bastion as done prevously.
+  <img src="https://i.imgur.com/gyyN5UG.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- After logging in, type **sudo nextcloud.occ config:system:set trusted_domains 1 --value=** followed by **YOUR UNIQUE** dns name previously created as shown below. Hit enter key once don and exit bastion.exit
+
+  <img src="https://i.imgur.com/puf15Md.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+- After exiting, open a new tab in your browser and enter **https://** followed by the DNS name previously used to access Nextcloud.
+
+The website should load and ask for an username and password. Fill that out using the credentials previously created in Bastion and log in.
+  <img src="https://i.imgur.com/PWv78YN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+After logging in, the site will load succesfully.   <img src="https://i.imgur.com/D3ujpL9.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+This completes the project. Following these steps, we have successfully completed each objective to fully create a Virtual Machine, deploy a Web Server, install Nextcloud using Bastion via SSH, published an IP, and created a DNS label.
